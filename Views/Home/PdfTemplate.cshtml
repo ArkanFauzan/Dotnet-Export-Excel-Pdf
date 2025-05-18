@@ -1,0 +1,19 @@
+@model IEnumerable<StudentExportApp.Models.Student>
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8" /><title>Data Mahasiswa</title>
+<style>table{width:100%;border-collapse:collapse;}th,td{border:1px solid #333;padding:4px;}</style>
+</head>
+<body>
+  <h2>Daftar Mahasiswa</h2>
+  <table>
+    <thead><tr><th>NIM</th><th>Nama</th><th>Email</th><th>Fakultas</th><th>Jurusan</th></tr></thead>
+    <tbody>
+      @foreach(var s in Model)
+      {
+        <tr><td>@s.Nim</td><td>@s.Nama</td><td>@s.Email</td><td>@s.Fakultas</td><td>@s.Jurusan</td></tr>
+      }
+    </tbody>
+  </table>
+</body>
+</html>

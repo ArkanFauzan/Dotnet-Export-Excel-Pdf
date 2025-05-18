@@ -1,13 +1,12 @@
-using ClosedXML.Excel;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using System.Diagnostics;
 using Rotativa.AspNetCore;
+using StudentExportApp.Repositories;
+using StudentExportApp.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Services
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddControllersWithViews();
 
 // Setup Rotativa (taruh wkhtmltopdf.exe di wwwroot/Rotativa)
