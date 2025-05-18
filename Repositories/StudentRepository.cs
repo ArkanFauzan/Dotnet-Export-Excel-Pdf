@@ -1,16 +1,40 @@
 using System.Collections.Generic;
+using Microsoft.Data.SqlClient;
 using StudentExportApp.Models;
 using StudentExportApp.Repositories.Interfaces;
 
 namespace StudentExportApp.Repositories;
 
-public class StudentRepository : IStudentRepository
+public class StudentRepository(
+    IConfiguration cfg
+) : IStudentRepository
 {
+    private readonly string _connStr = cfg.GetConnectionString("Default");
+
     public IEnumerable<Student> GetAll()
-        => new List<Student>
+    {
+        var list = new List<Student>();
+
+        using var conn = new SqlConnection(_connStr);
+        using var cmd  = new SqlCommand("GetAllStudent", conn)
         {
-            new(){ Nim="2021001", Nama="Arkan", Email="arkan@univ.ac.id", Fakultas="Teknik", Jurusan="Informatika" },
-            new(){ Nim="2021002", Nama="Fauzan", Email="fauzan@univ.ac.id", Fakultas="Ekonomi", Jurusan="Manajemen" },
-            new(){ Nim="2021003", Nama="Ayyasyi", Email="ayyasyi@univ.ac.id", Fakultas="Hukum", Jurusan="Ilmu Hukum" }
+            CommandType = System.Data.CommandType.StoredProcedure
         };
+
+        conn.Open();
+        using var rdr = cmd.ExecuteReader();
+        while (rdr.Read())
+        {
+            list.Add(new Student
+            {
+                Nim      = rdr.GetString(0),
+                Nama     = rdr.GetString(1),
+                Email    = rdr.GetString(2),
+                Fakultas = rdr.GetString(3),
+                Jurusan  = rdr.GetString(4)
+            });
+        }
+
+        return list;
+    }
 }
